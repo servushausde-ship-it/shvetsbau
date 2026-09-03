@@ -1,10 +1,15 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/send.js", "use": "@vercel/node" }
+    { "src": "api/send.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "assets/**", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/send", "dest": "/api/send.js" },
+    { "src": "^/$", "dest": "/index.html" },
+    { "src": "^/impressum$", "dest": "/impressum.html" },
+    { "src": "^/datenschutz$", "dest": "/datenschutz.html" },
     { "src": "/(.*)", "dest": "/$1" }
   ]
 }
