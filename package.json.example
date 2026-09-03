@@ -2,11 +2,6 @@
   "name": "shvetsbau-site",
   "version": "1.0.0",
   "description": "Static copy of shvetsbau.framer.website with Telegram form backend",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
-  },
   "engines": {
     "node": ">=18"
   },

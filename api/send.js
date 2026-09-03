@@ -1,3 +1,4 @@
+const https = require('https');
 const querystring = require('querystring');
 
 function escapeHtml(str) {
@@ -25,6 +26,44 @@ function buildMessage(fields) {
 function sendJson(res, status, obj) {
   res.writeHead(status, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(obj));
+}
+
+function sendTelegram(token, chatId, text) {
+  return new Promise((resolve, reject) => {
+    const payload = JSON.stringify({
+      chat_id: chatId,
+      text,
+      parse_mode: 'HTML',
+    });
+
+    const req = https.request(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload),
+        },
+      },
+      (res) => {
+        let data = '';
+        res.on('data', (chunk) => (data += chunk));
+        res.on('end', () => {
+          try {
+            const json = JSON.parse(data);
+            if (json.ok) resolve(json);
+            else reject(new Error(json.description || 'Telegram error'));
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+    );
+
+    req.on('error', reject);
+    req.write(payload);
+    req.end();
+  });
 }
 
 module.exports = async (req, res) => {
@@ -62,13 +101,7 @@ module.exports = async (req, res) => {
   const text = buildMessage(fields);
 
   try {
-    const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' }),
-    });
-    const tgData = await tgRes.json();
-    if (!tgData.ok) throw new Error(tgData.description || 'Telegram error');
+    await sendTelegram(token, chatId, text);
     sendJson(res, 200, { ok: true });
   } catch (err) {
     console.error(err);
