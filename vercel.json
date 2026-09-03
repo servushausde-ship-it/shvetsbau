@@ -1,13 +1,10 @@
 {
-  "rewrites": [
-    { "source": "/send", "destination": "/api/send" }
+  "version": 2,
+  "builds": [
+    { "src": "api/send.js", "use": "@vercel/node" }
   ],
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" }
-      ]
-    }
+  "routes": [
+    { "src": "/send", "dest": "/api/send.js" },
+    { "src": "/(.*)", "dest": "/$1" }
   ]
 }
