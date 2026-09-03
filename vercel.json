@@ -8,6 +8,7 @@
   ],
   "routes": [
     { "src": "/send", "dest": "/api/send.js" },
+    { "src": "^/api/telegram$", "dest": "/api/telegram.js" },
     { "src": "^/$", "dest": "/index.html" },
     { "src": "^/impressum$", "dest": "/impressum.html" },
     { "src": "^/datenschutz$", "dest": "/datenschutz.html" },
