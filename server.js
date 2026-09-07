@@ -116,7 +116,7 @@ function setCorsHeaders(res) {
 
 function serveStatic(req, res) {
   const parsed = new URL(req.url, `http://localhost:${PORT}`);
-  let pathname = parsed.pathname;
+  let pathname = decodeURIComponent(parsed.pathname);
 
   if (pathname === '/') pathname = '/index.html';
   else if (pathname === '/impressum') pathname = '/impressum.html';
